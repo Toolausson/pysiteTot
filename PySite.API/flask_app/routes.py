@@ -3,7 +3,7 @@ from flask import jsonify, request
 
 # Add initial User
 current_id = 0
-users = {str(current_id): {"name": "Jonass"}}
+users = {str(current_id): {"name": "Tommy"}}
 
 
 @app.route("/api/users", methods=["GET", "POST"])
@@ -39,5 +39,20 @@ def handle_user(user_id):
     if user_id in users:
         if request.method == "GET":
             return jsonify(users[user_id])
+        elif request.method == "PUT":
+            try:
+                data = request.get_json()
+                users[user_id] = data
+                return jsonify({"message": "username updated"}) 
+            except Exception as e:
+                print("Update error: ", e)
+                return jsonify({"message": "Failed to update user"})
+        elif request.method == "DELETE":
+            try: 
+                del users[user_id]
+                return jsonify({"message: User Deleted"})
+            except Exception as e:
+                print("Delete error:", e)
+                return jsonify({"message": "Failed to delete user"})
     else:
         return jsonify({"message": "User not found"}), 404
